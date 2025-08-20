@@ -4,14 +4,19 @@ import sqlite3
 def create_database():
     conn = sqlite3.connect('listings.db')
     cursor = conn.cursor()
+    
+    # Drop existing table
+    # cursor.execute('DROP TABLE IF EXISTS listings')
+    
     # Create table for Facebook Marketplace listings
     cursor.execute('''
-        CREATE TABLE listings (
+        CREATE TABLE IF NOT EXISTS listings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             price INTEGER,
             title TEXT,
             location TEXT,
-            url TEXT,
+            url TEXT UNIQUE,
+            emailed BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
@@ -30,12 +35,18 @@ def insert_listings_batch(listings):
             price_num = int(price.replace('$', '').replace(',', '').strip())
         except ValueError:
             price_num = 0
-        processed.append((price_num, title, location, url))
+        processed.append((price_num, title, location, url)) 
     
     cursor.executemany('''
-        INSERT INTO listings (price, title, location, url)
-        VALUES (?, ?, ?, ?)
-    ''', processed)
+    INSERT INTO listings (price, title, location, url)
+    VALUES (?, ?, ?, ?)
+    ON CONFLICT(url) DO UPDATE SET
+        price=excluded.price,
+        emailed=0, -- reset so you can trigger a new email
+        created_at=CURRENT_TIMESTAMP
+    WHERE excluded.price != listings.price;
+''', processed)
+
     
     conn.commit()
     conn.close()
@@ -51,7 +62,7 @@ def show_listings():
 
 # fb marketplace search is not stringent with title 
 def filter_listing(price, title, location, href): 
-    if make in title.lower():  # TODO generalize to any query with no make? 
+    if "cannondale" in title.lower():  # TODO generalize to any query with no make? 
         return True 
         # TODO 
         # 1. enter url
@@ -65,7 +76,7 @@ def get_listings(url):
     listings = []
     with sync_playwright() as p:
         # launch browser agent 
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(url)
 
@@ -98,12 +109,3 @@ def get_listings(url):
         
         insert_listings_batch(listings)    
         browser.close()
-
-
-make = "cannondale"
-model = "caadx"
-min_price = 300
-max_price = 1000
-
-get_listings(f"https://www.facebook.com/marketplace/memphis/search/?query={make}%20{model}&minPrice={min_price}&maxPrice={max_price}",make)
-show_listings()

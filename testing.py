@@ -50,16 +50,13 @@ def show_listings():
         print(listing)
     conn.close()
 
-# fb marketplace has hard filter for price but not for title or location 
-# location is not as important as title 
-def prefilter(title): 
-    if "cannondale" in title.lower():
-        return True
-    if "specialized" in title.lower():
+# fb marketplace search is not stringent with title 
+def prefilter(title):  # TODO generalize to any product? 
+    if make in title.lower():
         return True
     return False
 
-def get_listings(url):
+def get_listings(url. make):
     # Create database 
     create_database()
     
@@ -74,14 +71,14 @@ def get_listings(url):
         if login_locator:
             login_locator.first.click()
 
-        # find all elements with role="link"
+        # find listings (will have attribute role="link")
         links = page.locator('[role="link"]')
 
-        # extract information from each link
+        # extract information from each listing/link 
         for i in range(links.count()):
             link_element = links.nth(i)
             text = link_element.inner_text()
-            if len(text.split('\n')) <= 1:  # not a listing 
+            if len(text.split('\n')) <= 1:  # not a listing (e.g., "Log in")
                 continue
             href = "facebook.com" + link_element.get_attribute('href')
 
@@ -93,7 +90,6 @@ def get_listings(url):
                 print("Error parsing text from listing", text)
                 continue
 
-            
             # Insert into database
             if prefilter(title):
                 insert_listing(price, title, location, href)
@@ -106,5 +102,5 @@ model = "caadx"
 min_price = 300
 max_price = 1000
 
-get_listings(f"https://www.facebook.com/marketplace/memphis/search/?query={make}%20{model}&minPrice={min_price}&maxPrice={max_price}")
+get_listings(f"https://www.facebook.com/marketplace/memphis/search/?query={make}%20{model}&minPrice={min_price}&maxPrice={max_price}",make)
 show_listings()

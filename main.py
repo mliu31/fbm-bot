@@ -21,7 +21,7 @@ def main():
     get_listings(url)
     print("Listings fetched")
     
-    show_head()
+    # show_head()
     
     # Send email for new listings
     send_email_new_listings()

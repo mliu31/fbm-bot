@@ -1,28 +1,87 @@
 from playwright.sync_api import sync_playwright
+import sqlite3
 
-def get_links():
+def create_database():
+    conn = sqlite3.connect('listings.db')
+    cursor = conn.cursor()
+    # Create table for Facebook Marketplace listings
+    cursor.execute('''
+        CREATE TABLE listings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            price INTEGER,
+            title TEXT,
+            location TEXT,
+            url TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    print("Database table created with INTEGER price column")
+    conn.commit()
+    conn.close()
+
+def insert_listing(price, title, location, url):
+    conn = sqlite3.connect('listings.db')
+    cursor = conn.cursor()
+    
+    # Convert price string to number (remove $ and commas, then convert to integer)
+    try:
+        # Clean the price string and convert to integer
+        price_num = int(price.replace('$', '').replace(',', '').strip())
+    except ValueError as e:
+        price_num = 0  # Default to 0 if conversion fails
+    
+    cursor.execute('''
+        INSERT INTO listings (price, title, location, url)
+        VALUES (?, ?, ?, ?)
+    ''', (price_num, title, location, url))
+    
+    # print(f"Inserted: price={price_num}, title={title}, location={location}, url={url}")
+    
+    conn.commit()
+    conn.close()
+
+def show_listings(): 
+    conn = sqlite3.connect('listings.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM listings')
+    listings = cursor.fetchall()
+    for listing in listings:
+        print(listing)
+    conn.close()
+
+# fb marketplace has hard filter for price but not for title or location 
+# location is not as important as title 
+def prefilter(title): 
+    if "cannondale" in title.lower():
+        return True
+    if "specialized" in title.lower():
+        return True
+    return False
+
+def get_listings(url):
+    # Create database 
+    create_database()
+    
     with sync_playwright() as p:
+        # launch browser agent 
         browser = p.chromium.launch(headless=False)
         page = browser.new_page()
-        page.goto("https://www.facebook.com/marketplace/memphis/search/?query=cannondale%20caadx&minPrice=300&maxPrice=1000")
+        page.goto(url)
 
         # x out the login info 
-        if page.locator('div[aria-label="Close"]'):
-            # Click on the element once it's found
-            page.locator('div[aria-label="Close"]').first.click()
-
-        # time.sleep(10)
+        login_locator = page.locator('div[aria-label="Close"]')
+        if login_locator:
+            login_locator.first.click()
 
         # find all elements with role="link"
         links = page.locator('[role="link"]')
 
-        # extract both inner texts and href URLs into lists
-        texts = []
-        urls = []
+        # extract information from each link
         for i in range(links.count()):
             link_element = links.nth(i)
             text = link_element.inner_text()
-            if len(text.split('\n')) <= 1:
+            if len(text.split('\n')) <= 1:  # not a listing 
                 continue
             href = "facebook.com" + link_element.get_attribute('href')
 
@@ -34,11 +93,18 @@ def get_links():
                 print("Error parsing text from listing", text)
                 continue
 
-            print(price, title, location)
-            texts.append([price, title, location])
-            urls.append(href)
-
-
+            
+            # Insert into database
+            if prefilter(title):
+                insert_listing(price, title, location, href)
+            
         browser.close()
 
-get_links()
+
+make = "cannondale"
+model = "caadx"
+min_price = 300
+max_price = 1000
+
+get_listings(f"https://www.facebook.com/marketplace/memphis/search/?query={make}%20{model}&minPrice={min_price}&maxPrice={max_price}")
+show_listings()

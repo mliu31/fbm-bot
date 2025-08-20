@@ -16,27 +16,26 @@ def create_database():
         )
     ''')
     
-    print("Database table created with INTEGER price column")
     conn.commit()
     conn.close()
 
-def insert_listing(price, title, location, url):
+def insert_listings_batch(listings):
     conn = sqlite3.connect('listings.db')
     cursor = conn.cursor()
     
-    # Convert price string to number (remove $ and commas, then convert to integer)
-    try:
-        # Clean the price string and convert to integer
-        price_num = int(price.replace('$', '').replace(',', '').strip())
-    except ValueError as e:
-        price_num = 0  # Default to 0 if conversion fails
+    # convert price strings to integers
+    processed = []
+    for price, title, location, url in listings:
+        try:
+            price_num = int(price.replace('$', '').replace(',', '').strip())
+        except ValueError:
+            price_num = 0
+        processed.append((price_num, title, location, url))
     
-    cursor.execute('''
+    cursor.executemany('''
         INSERT INTO listings (price, title, location, url)
         VALUES (?, ?, ?, ?)
-    ''', (price_num, title, location, url))
-    
-    # print(f"Inserted: price={price_num}, title={title}, location={location}, url={url}")
+    ''', processed)
     
     conn.commit()
     conn.close()
@@ -51,15 +50,19 @@ def show_listings():
     conn.close()
 
 # fb marketplace search is not stringent with title 
-def prefilter(title):  # TODO generalize to any product? 
-    if make in title.lower():
-        return True
-    return False
+def filter_listing(price, title, location, href): 
+    if make in title.lower():  # TODO generalize to any query with no make? 
+        return True 
+        # TODO 
+        # 1. enter url
+        # 2. parse description for details
+        # 3. OCR on images to extract text (make, model, groupset, disc brakes) TODO cv classifier for cyclocross bike? 
+    return False 
 
-def get_listings(url. make):
+def get_listings(url):
     # Create database 
     create_database()
-    
+    listings = []
     with sync_playwright() as p:
         # launch browser agent 
         browser = p.chromium.launch(headless=False)
@@ -90,10 +93,10 @@ def get_listings(url. make):
                 print("Error parsing text from listing", text)
                 continue
 
-            # Insert into database
-            if prefilter(title):
-                insert_listing(price, title, location, href)
-            
+            if filter_listing(price, title, location, href):
+                listings.append((price, title, location, href))
+        
+        insert_listings_batch(listings)    
         browser.close()
 
 

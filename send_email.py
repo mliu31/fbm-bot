@@ -28,7 +28,7 @@ def send_email(subject, body):
         server.login(sender, password)
         server.send_message(msg)
 
-    print("\nEmail sent")
+    print("Sent email with new/updated listings")
 
 def fetch_new_listings():
     conn = sqlite3.connect("listings.db")
@@ -49,7 +49,11 @@ def fetch_new_listings():
         formatted_price = f"${price:,}"  # Add $ and commas
         formatted_rows.append((formatted_price, title, location, url))
 
-    table = tabulate(formatted_rows, headers=headers, tablefmt="html", numalign="left", stralign="left")
+    table = tabulate(formatted_rows, headers=headers, tablefmt="html", numalign="left", stralign="left")\
+
+    print(f"Found {num_listings} new listings.")
+    print(tabulate(formatted_rows, headers=headers, tablefmt="simple", numalign="left", stralign="left"))
+
     return table, num_listings
 
 def send_email_new_listings():

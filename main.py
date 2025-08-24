@@ -23,13 +23,14 @@ def main():
     # Build the Facebook Marketplace URL
     url = f"https://www.facebook.com/marketplace/{location}/search/?query={query_url}&minPrice={min_price}&maxPrice={max_price}"
     
-    print(f"\nSearching for {query} bikes in {location}...")
+    print(f"Searching for {query} bikes in {location}...")
     print(f"Price range: ${min_price} - ${max_price}")
     print(f"URL: {url}")
+    print("="*80)
     
     # Get listings from Facebook Marketplace
     get_listings(url, main_keyword)
-    print("Listings fetched")
+    print("Fetched listings")
     # show_head()
     
     # Send email for new listings

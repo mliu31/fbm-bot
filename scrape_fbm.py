@@ -53,6 +53,7 @@ def insert_listings_batch(listings):
 
 def show_head(limit=5):
     """Show the first few rows of the database table (like Unix 'head' command)"""
+    print("Showing db head")
     conn = sqlite3.connect('listings.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM listings LIMIT ?', (limit,))
@@ -74,22 +75,22 @@ def show_listings():
     conn.close()
 
 # fb marketplace search is not stringent with title 
-def filter_listing(price, title, location, href): 
-    if "cannondale" in title.lower():  # TODO generalize to any query with no make? 
+def filter_listing(price, title, location, href, keyword): 
+    if keyword in title.lower():  
         return True 
         # TODO 
-        # 1. enter url
+        # 1. agent visits url
         # 2. parse description for details
         # 3. OCR on images to extract text (make, model, groupset, disc brakes) TODO cv classifier for cyclocross bike? 
     return False 
 
-def get_listings(url):
+def get_listings(url, keyword):
     # Create database 
     create_database()
     listings = []
     with sync_playwright() as p:
         # launch browser agent 
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(headless=False)
         page = browser.new_page()
         page.goto(url)
 
@@ -117,7 +118,7 @@ def get_listings(url):
                 print("Error parsing text from listing", text)
                 continue
 
-            if filter_listing(price, title, location, href):
+            if filter_listing(price, title, location, href, keyword):
                 listings.append((price, title, location, href))
         
         insert_listings_batch(listings)    

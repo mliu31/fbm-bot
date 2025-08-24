@@ -65,7 +65,7 @@ def show_head(limit=5):
     
     conn.close()
 
-def show_listings(): 
+def show_all_listings(): 
     conn = sqlite3.connect('listings.db')
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM listings')

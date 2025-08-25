@@ -17,11 +17,11 @@ CREDENTIALS = {
 # Search parameters
 # ----------------------------
 SEARCH = {
-    'main_keyword': 'cannondale',
+    'keyword': 'cannondale',
     'query': 'cannondale caadx 105 51cm',
     'min_price': 300,
     'max_price': 1000,
-    'location': 'memphis',  # all options (open incognito): https://www.facebook.com/marketplace/directory/US/?_se_imp=0oey5sMRMSl7wluQZ&_rdr
+    'location': 'memphis',  # all options (wopen incognito): https://www.facebook.com/marketplace/directory/US/?_se_imp=0oey5sMRMSl7wluQZ&_rdr
     'delimiter': '%20'
 }
 
@@ -30,7 +30,7 @@ SEARCH = {
 # ----------------------------
 BASE_DIR = Path(__file__).parent
 DB = {
-    'path': BASE_DIR / 'listings.db'
+    'path': BASE_DIR / 'backend/listings.db'
 }
 
 # ----------------------------

@@ -11,8 +11,21 @@ if sys.platform.startswith("win"):
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse
 from backend.services import all_listings_service, pending_listings_service, scrape_service, notify_service
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:8000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
+)
 
 @app.post("/scrape")
 def scrape():

@@ -1,3 +1,4 @@
+from email.message import EmailMessage
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -25,19 +26,19 @@ def remove_emojis(text):
 
 def send_email(subject, body):
     # create message
-    msg = MIMEMultipart()
+    msg = EmailMessage()
     msg['From'] = sender
     msg['To'] = receiver
     msg['Subject'] = subject
-    msg.attach(MIMEText(body, 'html'))
+    msg.set_content(body)
 
     # send email
-    with smtplib.SMTP('smtp.gmail.com', 587) as server:
-        server.starttls()  # encrypt connection
-        server.login(sender, password)
-        server.send_message(msg)
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
+        s.login(sender, password)
+        s.send_message(msg)
 
     print("Sent email with new/updated listings")
+send_email("test", "test")
 
 def fetch_new_listings():
     conn = sqlite3.connect("listings.db")

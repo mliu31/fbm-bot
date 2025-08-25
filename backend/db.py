@@ -81,11 +81,16 @@ def show_head(limit=5):
     
     conn.close()
 
-def show_all_listings(): 
+def fetch_all_listings():
     conn = sqlite3.connect(db)
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM listings')
-    listings = cursor.fetchall()
-    for listing in listings:
-        print(listing)
+    cur = conn.cursor()
+
+    cur.execute("SELECT * FROM listings")
+    rows = cur.fetchall()
+    headers = [d[0] for d in cur.description]
+    
     conn.close()
+    
+    listings = [{'price': r[0], 'title': r[1], 'location': r[2], 'url': r[3]} for r in rows]
+    
+    return listings, headers

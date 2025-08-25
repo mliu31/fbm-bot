@@ -67,4 +67,6 @@ Inspired by [Michael Reeves](https://www.youtube.com/@MichaelReeves/videos)
 Built with help from:
 - [Web Scraping Tutorial](https://www.youtube.com/watch?v=nE6m6LERn2U&t=1024s)
 - [Email Sending Guide](https://cupofcode.blog/code-email-sending/)
+- [Passivebot](https://github.com/passivebot/facebook-marketplace-scraper?tab=readme-ov-file#facebook-marketplace-scraper)
+
 - Cursor/GPT-5/Gemini 2.5 Pro

@@ -13,6 +13,7 @@ This software is meant for educational purposes only. Use at your own risk.
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # Windows
+source ~/myenv/bin/activate # Linux
 ```
 
 2) Install deps
@@ -28,24 +29,8 @@ Note: ```playwright install``` installs the binaries that playwright needs to op
   - SEARCH: query, delimiter, location, min_price, max_price, keyword
   - SMTP settings for email
 
-## Host the API
-```bash
-uvicorn api:app --reload  # runs on http://localhost:8000
-```
-
-## Endpoints
-- POST `/scrape` — scrape FBM and insert listings to db 
-- GET `/pending_listings` — listings to be emailed
-- GET `/all_listings` — all listings in DB
-- POST `/send_email` — email new listings
-
-### Test on Postman 
-```bash
-POST http://localhost:8000/scrape
-GET http://localhost:8000/pending_listings
-GET http://localhost:8000/all_listings
-post http://localhost:8000/send_email
-```
+4) Run 
+```py main.py``` 
 
 ## Project Structure
 - `main.py` - Main entry point for the bot
@@ -57,6 +42,27 @@ post http://localhost:8000/send_email
   - `services.py` - Logic for processing listings
   - `notifications.py` - Email notification system
   - `listings.db` - SQLite database storing scraped listings
+
+
+## API (TODO frontend)
+### Start server to host 
+```bash
+uvicorn api:app --reload  # runs on http://localhost:8000
+```
+
+### Endpoints
+- POST `/scrape` — scrape FBM and insert listings to db 
+- GET `/pending_listings` — listings to be emailed
+- GET `/all_listings` — all listings in DB
+- POST `/send_email` — email new listings
+
+### Test endpoints on Postman 
+```bash
+POST http://localhost:8000/scrape
+GET http://localhost:8000/pending_listings
+GET http://localhost:8000/all_listings
+post http://localhost:8000/send_email
+```
 
 ## Notes (Windows)
 If Playwright errors under Uvicorn, ensure browsers are installed and restart. The app sets a Windows event loop policy in `api.py`.

@@ -38,7 +38,6 @@ def send_email(subject, body):
         s.send_message(msg)
 
     print("Sent email with new/updated listings")
-send_email("test", "test")
 
 def fetch_new_listings():
     conn = sqlite3.connect("listings.db")

@@ -8,7 +8,7 @@ def create_database():
     cursor = conn.cursor()
     
     # Drop existing table
-    cursor.execute('DROP TABLE IF EXISTS listings')
+    # cursor.execute('DROP TABLE IF EXISTS listings')
 
     # Create table for Facebook Marketplace listings
     cursor.execute('''

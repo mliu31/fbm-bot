@@ -1,5 +1,6 @@
 from scrape_fbm import get_listings, show_head
 from send_email import send_email_new_listings
+from datetime import datetime
 
 def main():
     config = {
@@ -23,6 +24,8 @@ def main():
     # Build the Facebook Marketplace URL
     url = f"https://www.facebook.com/marketplace/{location}/search/?query={query_url}&minPrice={min_price}&maxPrice={max_price}"
     
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Time: {current_time}")
     print(f"Searching for {query} bikes in {location}...")
     print(f"Price range: ${min_price} - ${max_price}")
     print(f"URL: {url}")

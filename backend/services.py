@@ -1,15 +1,23 @@
 from backend.notifications import send_email
 from backend.scrape_fbm import get_listings
-from backend.db import fetch_unemailed_listings, insert_listings_batch
+from backend.db import fetch_unemailed_listings, insert_listings_batch, fetch_all_listings
 from tabulate import tabulate
+from config import SEARCH
 
-def scrape_service(url, keyword):
-    listings = get_listings(url, keyword)
+def scrape_service():
+    query_url = SEARCH['query'].replace(" ", SEARCH['delimiter'])
+    url = f"https://www.facebook.com/marketplace/{SEARCH['location']}/search/?query={query_url}&minPrice={SEARCH['min_price']}&maxPrice={SEARCH['max_price']}"
+
+    listings = get_listings(url, SEARCH['keyword'])
     insert_listings_batch(listings)
     return {"inserted": len(listings)}
 
-def listings_service():
+def pending_listings_service():
     rows, headers = fetch_unemailed_listings()
+    return {"headers": headers, "rows": rows}
+
+def all_listings_service(): 
+    rows, headers = fetch_all_listings()
     return {"headers": headers, "rows": rows}
 
 def notify_service():

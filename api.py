@@ -1,16 +1,35 @@
-from fastapi import FastAPI
-from backend.services import scrape_service, listings_service, notify_service
+import sys
+import asyncio
+
+# Ensure subprocess support on Windows for Playwright under Uvicorn/asyncio
+if sys.platform.startswith("win"):
+    try:
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    except Exception:
+        pass
+
+from fastapi import FastAPI, status
+from fastapi.responses import JSONResponse
+from backend.services import all_listings_service, pending_listings_service, scrape_service, notify_service
 
 app = FastAPI()
 
-@app.get("/scrape")
+@app.post("/scrape")
 def scrape():
-    return scrape_service()
+    result = scrape_service()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result)
 
-@app.get("/listings")
-def listings():
-    return listings_service()
+@app.get("/pending_listings")
+def pending_listings():
+    result = pending_listings_service()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result)
+
+@app.get("/all_listings")
+def all_listings():
+    result = all_listings_service()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result)
 
 @app.post("/send_email")
 def send_email():
-    return notify_service()
+    result = notify_service()
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result)

@@ -90,7 +90,7 @@ def get_listings(url, keyword):
     listings = []
     with sync_playwright() as p:
         # launch browser agent 
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)  # headless=Truedoesn't open browser window
         page = browser.new_page()
         page.goto(url)
 

@@ -10,7 +10,7 @@ def scrape_service():
 
     listings = get_listings(url, SEARCH['keyword'])
     insert_listings_batch(listings)
-    return {"inserted": len(listings)}
+    return {"scraped": len(listings)}
 
 def pending_listings_service():
     rows, headers = fetch_unemailed_listings()
@@ -29,7 +29,7 @@ def notify_service():
 
     listings, headers = fetch_unemailed_listings()
     if not listings:
-        return {"msg": "no new listings"}
+        return {"sent": 0}
 
     formatted = [(f"${l['price']:,}", remove_emojis(l['title']), remove_emojis(l['location']), l['url']) for l in listings]
 

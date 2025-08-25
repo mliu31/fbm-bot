@@ -5,11 +5,14 @@ from datetime import datetime
 def main():
     print(f"{datetime.now()} - Searching {SEARCH['query']} in {SEARCH['location']}")
 
-    result = scrape_service()
-    print(f"Inserted {result['inserted']} listings")
+    scraped = scrape_service()
+    print(f"Scraped {scraped['inserted']} listings")
 
     notif = notify_service()
-    print(notif)
+    if notif['sent'] > 0:
+        print(f"Emailed {notif['sent']} new listings.")
+    else:
+        print("0 new listings.")
 
 if __name__ == "__main__":
     main()

@@ -18,7 +18,7 @@ CREDENTIALS = {
 # ----------------------------
 SEARCH = {
     'keyword': 'cannondale',
-    'query': 'cannondale caadx 105 51cm',
+    'query': 'cannondale caadx 51cm 105 hydraulic disc brakes',
     'min_price': 300,
     'max_price': 1000,
     'location': 'memphis',  # all options (wopen incognito): https://www.facebook.com/marketplace/directory/US/?_se_imp=0oey5sMRMSl7wluQZ&_rdr

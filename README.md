@@ -1,0 +1,70 @@
+# Facebook Marketplace Bot 
+
+A Python-based automation bot that scrapes Facebook Marketplace listings based on your search criteria (Playwright), stores them in a local database (sqlite), and sends email notifications for new listings. 
+
+This software is meant for educational purposes only. Use at your own risk.  
+
+## Requirements
+- Python 3.12+
+- Google Chrome (for Playwright) or another supported browser
+
+## Setup
+1) Create and activate a venv
+```bash
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+```
+
+2) Install deps
+```bash
+pip install -r requirements.txt
+python -m playwright install 
+```
+Note: ```playwright install``` installs the binaries that playwright needs to operate for your os/browser. This is distinct from the pip installed package, which are commands that need binaries to run. 
+
+3) Configure
+- Edit `config.py` to set:
+  - DB path
+  - SEARCH: query, delimiter, location, min_price, max_price, keyword
+  - SMTP settings for email
+
+## Host the API
+```bash
+uvicorn api:app --reload  # runs on http://localhost:8000
+```
+
+## Endpoints
+- POST `/scrape` — scrape FBM and insert listings to db 
+- GET `/pending_listings` — listings to be emailed
+- GET `/all_listings` — all listings in DB
+- POST `/send_email` — email new listings
+
+### Test on Postman 
+```bash
+POST http://localhost:8000/scrape
+GET http://localhost:8000/pending_listings
+GET http://localhost:8000/all_listings
+post http://localhost:8000/send_email
+```
+
+## Project Structure
+- `main.py` - Main entry point for the bot
+- `api.py` - FastAPI server with endpoints for scraping and emailing
+- `config.py` - Configuration settings for search criteria and email
+- `backend/` - Core backend modules
+  - `scrape_fbm.py` - Facebook Marketplace scraping logic using Playwright
+  - `db.py` - Database operations and SQLite setup
+  - `services.py` - Logic for processing listings
+  - `notifications.py` - Email notification system
+  - `listings.db` - SQLite database storing scraped listings
+
+## Notes (Windows)
+If Playwright errors under Uvicorn, ensure browsers are installed and restart. The app sets a Windows event loop policy in `api.py`.
+
+## Credits
+Inspired by [Michael Reeves](https://www.youtube.com/@MichaelReeves/videos)
+
+Built with help from:
+- [Web Scraping Tutorial](https://www.youtube.com/watch?v=nE6m6LERn2U&t=1024s)
+- [Email Sending Guide](https://cupofcode.blog/code-email-sending/)
+- Cursor/GPT-5/Gemini 2.5 Pro

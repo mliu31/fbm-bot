@@ -14,6 +14,15 @@ sender = os.getenv("GMAIL")
 receiver = os.getenv("GMAIL")
 password = os.getenv("GMAIL_APP_PWD")
 
+def remove_emojis(text):
+    """Remove non-alphanumeric characters (including emojis) from text"""
+    if text is None:
+        return ""
+    # Keep only alphanumeric characters, spaces, and common punctuation
+    import string
+    allowed_chars = string.ascii_letters + string.digits + string.whitespace + ".,!?@#$%&*()-_+=:;\"'<>/\\|[]{}()"
+    return ''.join(char for char in str(text) if char in allowed_chars)
+
 def send_email(subject, body):
     # create message
     msg = MIMEMultipart()
@@ -47,7 +56,10 @@ def fetch_new_listings():
     for row in rows:
         price, title, location, url = row
         formatted_price = f"${price:,}"  # Add $ and commas
-        formatted_rows.append((formatted_price, title, location, url))
+        # Remove emojis from title and location
+        clean_title = remove_emojis(title)
+        clean_location = remove_emojis(location)
+        formatted_rows.append((formatted_price, clean_title, clean_location, url))
 
     table = tabulate(formatted_rows, headers=headers, tablefmt="html", numalign="left", stralign="left")\
 

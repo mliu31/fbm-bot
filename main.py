@@ -1,9 +1,13 @@
+from backend.db import init_db, reset_db
 from backend.services import notify_service, scrape_service
 from config import SEARCH
 from datetime import datetime
 
 def main():
     print(f"{datetime.now()} - Searching {SEARCH['query']} in {SEARCH['location']}")
+
+    # reset_db()
+    init_db()
 
     scraped = scrape_service()
     print(f"Scraped {scraped['scraped']} listings")

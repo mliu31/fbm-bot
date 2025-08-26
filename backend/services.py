@@ -1,13 +1,38 @@
 from backend.notifications import send_email
 from backend.scrape_fbm import get_listings
-from backend.db import fetch_unemailed_listings, insert_listings_batch, fetch_all_listings
+from backend.db import fetch_unemailed_listings, insert_listings_batch, fetch_all_listings, init_db, reset_db
 from tabulate import tabulate
 from config import SEARCH
+
+def create_db_service():
+    try:
+        init_db()
+        return {"status": "success", "msg": "Database initialized successfully"}
+    except Exception as e:
+        return {"status": "error", "msg": f"Failed to initialize database: {str(e)}"}
+
+def db_status_service():
+    try:
+        from backend.db import show_head
+        show_head()
+        # This will print to console, but we can also return status
+        return {"status": "success", "msg": "Database is accessible"}
+    except Exception as e:
+        return {"status": "error", "msg": f"Database error: {str(e)}"}
+
+def reset_db_service():
+    try:
+        reset_db()
+        init_db()
+        return {"status": "success", "msg": "Database reset successfully"}
+    except Exception as e:
+        return {"status": "error", "msg": f"Failed to reset database: {str(e)}"}
 
 def scrape_service():
     query_url = SEARCH['query'].replace(" ", SEARCH['delimiter'])
     url = f"https://www.facebook.com/marketplace/{SEARCH['location']}/search/?query={query_url}&minPrice={SEARCH['min_price']}&maxPrice={SEARCH['max_price']}"
 
+    print(url)
     listings = get_listings(url, SEARCH['keyword'])
     insert_listings_batch(listings)
     return {"scraped": len(listings)}

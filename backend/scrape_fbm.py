@@ -1,3 +1,4 @@
+from config import RUNTIME
 from playwright.sync_api import sync_playwright
 
 
@@ -19,9 +20,13 @@ def get_listings(url, keyword):
 
     with sync_playwright() as p:
         # launch browser agent 
-        browser = p.firefox.launch(headless=True)  # headless=Truedoesn't open browser window
+        browser = p.firefox.launch(headless=RUNTIME['headless'], args=[
+        "-profile",
+        "/tmp/firefox-profile",   # temp clean profile
+        "-no-remote"
+    ])  
         page = browser.new_page()
-        page.goto(url)
+        page.goto(url,wait_until="domcontentloaded", timeout=120000)
 
         #dismiss login popup if present
         login_locator = page.locator('div[aria-label="Close"]')

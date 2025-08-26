@@ -6,7 +6,7 @@ def main():
     print(f"{datetime.now()} - Searching {SEARCH['query']} in {SEARCH['location']}")
 
     scraped = scrape_service()
-    print(f"Scraped {scraped['inserted']} listings")
+    print(f"Scraped {scraped['scraped']} listings")
 
     notif = notify_service()
     if notif['sent'] > 0:

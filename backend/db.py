@@ -29,6 +29,7 @@ def reset_db():
     
     # Drop existing table
     cursor.execute('DROP TABLE IF EXISTS listings')
+    print("Dropped listings.db")
 
     conn.commit()
     conn.close()

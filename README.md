@@ -67,6 +67,19 @@ post http://localhost:8000/send_email
 ## Notes (Windows)
 If Playwright errors under Uvicorn, ensure browsers are installed and restart. The app sets a Windows event loop policy in `api.py`.
 
+## Challenges & Lessons Learned 
+* Bot detection is constant cat-and-mouse
+  * FB flags instant clicks/typing
+  * Real account login felt unsafe (possible ban) → didn't log in + headless-humanlike pacing
+* Keep secrets out of git 
+  * Pushed .env → purged history, added to .gitignore
+* System software matters
+  * Old raspbian blocked deps → clean install fixed it
+* Optimize for hardware limits
+  * Raspberry Pi's low ram → swap thrash
+  * Firefox = private but heavy
+  * Chromium = lighter but triggers fb checks → chose lighter browser + accepted privacy tradeoff
+
 ## Credits
 Inspired by [Michael Reeves](https://www.youtube.com/@MichaelReeves/videos)
 
@@ -76,11 +89,8 @@ Built with help from:
 - [Passivebot](https://github.com/passivebot/facebook-marketplace-scraper?tab=readme-ov-file#facebook-marketplace-scraper)
 - Cursor/GPT-5/Gemini 2.5 Pro
 
-## Challenges 
-* FB anti-bot measures (detects instantaneous clicks/typing)
-  * Originally logged in on my real account but was afraid of getting banned bc scraping often 
-* Pushed .env file oops (had to delete from commit history)
-* Raspbian version too old (installed latest version)
-* Raspberry Pi's limited RAM spilling over into swaps --> thrashing 
-  * Switched from Firefox (private but heavy) to a Chromium 
-  * Made Chromium lighter (eg no profile) activating FB's anti-bot measures again
+
+## 
+```cloc . --exclude-dir=.venv```
+
+Number of lines of code = 245 

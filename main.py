@@ -4,7 +4,7 @@ from config import SEARCH
 from datetime import datetime
 
 def main():
-    print(f"{datetime.now()} - Searching {SEARCH['query']} in {SEARCH['location']}")
+    print(f"{datetime.now()} - Searching '{SEARCH['query']}' in '{SEARCH['location']}'")
 
     # reset_db()
     init_db()

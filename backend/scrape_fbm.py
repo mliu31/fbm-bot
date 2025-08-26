@@ -20,13 +20,30 @@ def get_listings(url, keyword):
 
     with sync_playwright() as p:
         # launch browser agent 
-        browser = p.firefox.launch(headless=RUNTIME['headless'], args=[
-        "-profile",
-        "/tmp/firefox-profile",   # temp clean profile
-        "-no-remote"
-    ])  
-        page = browser.new_page()
-        page.goto(url,wait_until="domcontentloaded", timeout=120000)
+        browser = p.chromium.launch(headless=RUNTIME['headless'], 
+             args=[
+                "--disable-gpu",
+                "--disable-dev-shm-usage",
+                "--no-sandbox",
+                "--single-process",
+                "--no-zygote",
+                "--disable-extensions",
+                "--disable-background-timer-throttling",
+                "--disable-software-rasterizer",
+            ],
+        )  
+
+        ctx = browser.new_context( 
+            viewport={"width": 1024, "height": 768},
+            user_agent="Mozilla/5.0 (X11; Linux arm) AppleWebKit/537.36 (KHTML, like Gecko) Chrome Safari",
+        )
+        page = ctx.new_page()
+        
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=120000)
+            print("visited page:", page.title())
+        except TimeoutError: 
+            print("goto timed out (increase timeout or check network)")
 
         #dismiss login popup if present
         login_locator = page.locator('div[aria-label="Close"]')

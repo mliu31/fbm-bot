@@ -3,13 +3,10 @@ from config import DB
 
 db = DB['path']
 
-def create_database():
+def init_db():
     conn = sqlite3.connect(db)
     cursor = conn.cursor()
     
-    # Drop existing table
-    # cursor.execute('DROP TABLE IF EXISTS listings')
-
     # Create table for Facebook Marketplace listings
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS listings (
@@ -23,6 +20,16 @@ def create_database():
         )
     ''')
     
+    conn.commit()
+    conn.close()
+
+def reset_db(): 
+    conn = sqlite3.connect(db)
+    cursor = conn.cursor()
+    
+    # Drop existing table
+    cursor.execute('DROP TABLE IF EXISTS listings')
+
     conn.commit()
     conn.close()
 
@@ -53,8 +60,8 @@ def fetch_unemailed_listings():
     conn = sqlite3.connect(db)
     cur = conn.cursor()
 
-    # get unemailed listings 
-    cur.execute("SELECT price, title, location, url FROM listings WHERE emailed=0")
+    # get unemailed listings sorted by price (lowest to highest)
+    cur.execute("SELECT price, title, location, url FROM listings WHERE emailed=0 ORDER BY price ASC")
     rows = cur.fetchall()
     headers = [d[0] for d in cur.description]
     # set unemailed listings to emailed 

@@ -74,5 +74,13 @@ Built with help from:
 - [Web Scraping Tutorial](https://www.youtube.com/watch?v=nE6m6LERn2U&t=1024s)
 - [Email Sending Guide](https://cupofcode.blog/code-email-sending/)
 - [Passivebot](https://github.com/passivebot/facebook-marketplace-scraper?tab=readme-ov-file#facebook-marketplace-scraper)
-
 - Cursor/GPT-5/Gemini 2.5 Pro
+
+## Challenges 
+* FB anti-bot measures (detects instantaneous clicks/typing)
+  * Originally logged in on my real account but was afraid of getting banned bc scraping often 
+* Pushed .env file oops (had to delete from commit history)
+* Raspbian version too old (installed latest version)
+* Raspberry Pi's limited RAM spilling over into swaps --> thrashing 
+  * Switched from Firefox (private but heavy) to a Chromium 
+  * Made Chromium lighter (eg no profile) activating FB's anti-bot measures again

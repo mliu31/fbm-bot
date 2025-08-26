@@ -13,7 +13,7 @@ This software is meant for educational purposes only. Use at your own risk.
 ```bash
 python -m venv .venv
 .venv\Scripts\activate  # Windows
-source ~/myenv/bin/activate # Linux
+source ./.venv/bin/activate # Linux
 ```
 
 2) Install deps

@@ -67,17 +67,34 @@ post http://localhost:8000/send_email
 ## Notes (Windows)
 If Playwright errors under Uvicorn, ensure browsers are installed and restart. The app sets a Windows event loop policy in `api.py`.
 
+## How to Setup Autonomous Execution on Raspberry Pi
+1. Open the crontab editor for your user
+```bash
+crontab -e
+``` 
+2. Setup daily script at 6:30pm 
+```bash 
+30 18 * * * cd /home/pi/fbm-bot && /home/pi/fbm-bot/.venv/bin/python main.py >> /home/pi/fbm-bot/cron.log 2>&1
+``` 
+Format: "minute hour day month weekday command". 
+
+```cd … && … ``` ensures correct working directory
+
+```>> cron.log 2>&1``` logs both stdout and errors
+
+3. Check setup. 
+
 ## Challenges & Lessons Learned 
-* Bot detection is constant cat-and-mouse
-  * FB flags instant clicks/typing
-  * Real account login felt unsafe (possible ban) → didn't log in + headless-humanlike pacing
-* Keep secrets out of git 
-  * Pushed .env → purged history, added to .gitignore
-* System software matters
-  * Old raspbian blocked deps → clean install fixed it
-* Optimize for hardware limits
-  * Firefox killed Raspberry Pi’s low RAM 
-  * Switched to Chromium + added zram + 1GB swap
+- Bot detection is constant cat-and-mouse
+  - FB flags instant clicks/typing
+  - Real account login felt unsafe (possible ban) → didn't log in + headless-humanlike pacing
+- Keep secrets out of git 
+  - Pushed .env → purged history, added to .gitignore
+- System software matters
+  - Old raspbian blocked deps → clean install fixed it
+- Optimize for hardware limits
+  - Firefox killed Raspberry Pi’s low RAM 
+  - Switched to Chromium + added zram + 1GB swap
 ## Credits
 Inspired by [Michael Reeves](https://www.youtube.com/@MichaelReeves/videos)
 

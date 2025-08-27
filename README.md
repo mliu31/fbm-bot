@@ -76,10 +76,8 @@ If Playwright errors under Uvicorn, ensure browsers are installed and restart. T
 * System software matters
   * Old raspbian blocked deps → clean install fixed it
 * Optimize for hardware limits
-  * Raspberry Pi's low ram → swap thrash
-  * Firefox = private but heavy
-  * Chromium = lighter but triggers fb checks → chose lighter browser + accepted privacy tradeoff
-
+  * Firefox killed Raspberry Pi’s low RAM 
+  * Switched to Chromium + added zram + 1GB swap
 ## Credits
 Inspired by [Michael Reeves](https://www.youtube.com/@MichaelReeves/videos)
 

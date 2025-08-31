@@ -35,14 +35,14 @@ def get_listings(url, keyword):
             except TimeoutError: 
                 print("Timed out visiting ", url)
 
-            time.sleep(3)
+            time.sleep(1)
 
             # dismiss login popup if present
             login_locator = page.locator('div[aria-label="Close"]')
             if login_locator.is_visible():
                 login_locator.first.click()
 
-            time.sleep(3)
+            time.sleep(1)
 
             # find listings 
             links = page.locator('[role="link"]')

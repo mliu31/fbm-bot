@@ -2,6 +2,8 @@
 
 A Python-based automation bot that scrapes Facebook Marketplace listings based on your search criteria (Playwright), stores them in a local database (sqlite), and sends email notifications for new listings. 
 
+![ohmygodfinally](https://github.com/user-attachments/assets/a669cfa5-c816-4a58-a7f1-16d2ea66ca44)
+
 This software is meant for educational purposes only. Use at your own risk.  
 
 ## Requirements

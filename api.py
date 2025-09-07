@@ -27,9 +27,9 @@ app.add_middleware(
     allow_headers=["Content-Type"],
 )
 
-@app.post("/scrape")
-def scrape():
-    result = scrape_service()
+@app.post(f"/scrape")
+def scrape(location:str, keyword:str, query:str, min_price:str, max_price): # query params instead of path params
+    result = scrape_service(location, keyword, query, min_price, max_price)
     return JSONResponse(status_code=status.HTTP_200_OK, content=result)
 
 @app.get("/pending_listings")

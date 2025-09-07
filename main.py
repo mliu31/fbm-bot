@@ -9,7 +9,13 @@ def main():
     # reset_db()
     init_db()
 
-    scraped = scrape_service()
+    location = SEARCH['location']
+    keyword = SEARCH['keyword']
+    query = SEARCH['query']
+    min_price = SEARCH['min_price']
+    max_price = SEARCH['max_price']
+
+    scraped = scrape_service(location, keyword, query, min_price, max_price)
     print(f"Scraped {scraped['scraped']} listings")
 
     notif = notify_service()

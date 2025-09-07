@@ -28,12 +28,12 @@ def reset_db_service():
     except Exception as e:
         return {"status": "error", "msg": f"Failed to reset database: {str(e)}"}
 
-def scrape_service():
-    query_url = SEARCH['query'].replace(" ", SEARCH['delimiter'])
-    url = f"https://www.facebook.com/marketplace/{SEARCH['location']}/search/?query={query_url}&minPrice={SEARCH['min_price']}&maxPrice={SEARCH['max_price']}"
+def scrape_service(location, keyword, query, min_price, max_price):
+    # query_url = SEARCH['query'].replace(" ", SEARCH['delimiter'])
+    url = f"https://www.facebook.com/marketplace/{location}/search/?query={query}&minPrice={min_price}&maxPrice={max_price}"
 
     print(url)
-    listings = get_listings(url, SEARCH['keyword'])
+    listings = get_listings(url, keyword)
     insert_listings_batch(listings)
     return {"scraped": len(listings)}
 
